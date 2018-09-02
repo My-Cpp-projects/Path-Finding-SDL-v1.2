@@ -17,11 +17,13 @@ pathFinder::PathFinder::PathFinder(MapData* mapData, int startX, int startY, int
 	, mIsProcessingAdjacent(true)
 	, mIsTargetFound(false)
 	, mIsPathConstructing(false)
+	, mIsCreatingMap(true)
 {
 	mMapData->mNodes[mStartX][mStartY] = new Node(mStartX, mStartY);
-	
-	// TODO change this
+	mMapData->mNodes[mTargetX][mTargetY] = new Node(mTargetX, mTargetY);
+
 	addToOpenSet(mMapData->mNodes[mStartX][mStartY]);
+	mMapData->mNodes[mTargetX][mTargetY]->mColour = ::DrawUtil::Colour::TILE_YELLOW;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -64,21 +66,21 @@ void pathFinder::PathFinder::processAdjacent()
 			MapData::TerrainType::POSSIBLE == static_cast<MapData::TerrainType>(mMapData->mMap[tmpY * mMapData->mWidth + tmpX])
 			)
 		{
+			if (tmpX == mTargetX && tmpY == mTargetY)
+			{
+				mIsProcessingAdjacent = false;
+				mIsTargetFound = true;
+				mIsPathConstructing = true;
+				mMapData->mNodes[tmpX][tmpY]->mParent = mCurrentNode;
+				return;
+			}
+
 			Node** tmpNode = &mMapData->mNodes[tmpX][tmpY];
 
 			if (!(*tmpNode))
 			{
 				createNewNode(tmpNode, tmpX, tmpY);
 				addToOpenSet(*tmpNode);
-
-				if (tmpX == mTargetX && tmpY == mTargetY)
-				{
-					mIsProcessingAdjacent = false;
-					mIsTargetFound = true;
-					mIsPathConstructing = true;
-					return;
-				}
-
 				offset = i + 1;
 				return; // Stop the function so the updated map will be drawn
 			}
@@ -108,7 +110,6 @@ void pathFinder::PathFinder::findShortestPathTile()
 		// For updating the start node
 		tmpNode->mColour = ::DrawUtil::TILE_PURPLE;
 		mIsPathConstructing = false;
-		mIsRunning = false;
 	}
 }
 
@@ -139,30 +140,47 @@ void pathFinder::PathFinder::onEvent()
 						mIsProcessingAdjacent = false;
 						mIsPathConstructing = false;
 					} break;
+
+					case SDLK_KP_ENTER:
+					case SDLK_RETURN:
+					{
+						mIsCreatingMap = false;
+					} break;
+
 				}
 			}
+
+			case SDL_MOUSEBUTTONDOWN:
+			{
+				mousePress(Event.button);
+			} break;
 		}
 	}
 }
 
-bool pathFinder::PathFinder::isRunning()
+bool pathFinder::PathFinder::isRunning() const
 {
 	return mIsRunning;
 }
 
-bool pathFinder::PathFinder::isProcessingAdjacent()
+bool pathFinder::PathFinder::isProcessingAdjacent() const
 {
 	return mIsProcessingAdjacent;
 }
 
-bool pathFinder::PathFinder::isTargetFound()
+bool pathFinder::PathFinder::isTargetFound() const
 {
 	return mIsTargetFound;
 }
 
-bool pathFinder::PathFinder::isPathConstucting()
+bool pathFinder::PathFinder::isPathConstucting() const
 {
 	return mIsPathConstructing;
+}
+
+bool pathFinder::PathFinder::isCreatingMap() const
+{
+	return mIsCreatingMap;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -214,4 +232,35 @@ void pathFinder::PathFinder::addToOpenSet(Node* node)
 	node->isProcessed = true;
 	node->mColour = ::DrawUtil::TILE_GREEN;
 	openSet.push(node);
+}
+
+void pathFinder::PathFinder::mousePress(SDL_MouseButtonEvent& b)
+{
+	if (mIsCreatingMap)
+	{
+		if (b.button == SDL_BUTTON_LEFT)
+		{
+			int x = ceil(b.x / ::DrawUtil::TILE_SIZE);
+			int y = ceil(b.y / ::DrawUtil::TILE_SIZE);
+
+			switch (static_cast<MapData::TerrainType> (mMapData->mMap[y * mMapData->mWidth + x]))
+			{
+
+				case MapData::TerrainType::IMPOSSIBLE:
+				{
+					mMapData->mMap[y * mMapData->mWidth + x] = static_cast<char> (MapData::TerrainType::POSSIBLE);
+					mMapData->mColorMap[x][y] = ::DrawUtil::Colour::TILE_WHITE;
+				} break;
+
+				case MapData::TerrainType::POSSIBLE:
+				{
+					mMapData->mMap[y * mMapData->mWidth + x] = static_cast<char> (MapData::TerrainType::IMPOSSIBLE);
+					mMapData->mColorMap[x][y] = ::DrawUtil::Colour::TILE_BLACK;
+				} break;
+
+				default:
+					break;
+			}
+		}
+	}
 }

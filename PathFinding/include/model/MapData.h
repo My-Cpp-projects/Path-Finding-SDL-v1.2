@@ -61,7 +61,7 @@ struct pathFinder::MapData
 		mNodes = nullptr;
 	}
 
-	bool isInMap(int x, int y)
+	bool isInMap(int x, int y) const
 	{
 		if (x >= 0 && y >= 0 && x < mWidth && y < mHeight)
 		{

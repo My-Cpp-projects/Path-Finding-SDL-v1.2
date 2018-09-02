@@ -32,10 +32,11 @@ public:
 	void processAdjacent();
 	void findShortestPathTile();
 	void onEvent();
-	bool isRunning();
-	bool isProcessingAdjacent();
-	bool isTargetFound();
-	bool isPathConstucting();
+	bool isRunning() const;
+	bool isProcessingAdjacent() const;
+	bool isTargetFound() const;
+	bool isPathConstucting() const;
+	bool isCreatingMap() const;
 
 private:
 
@@ -45,6 +46,7 @@ private:
 	void updateExistingNodeScore(Node* node);
 	void createNewNode(Node** node, int x, int y);
 	void addToOpenSet(Node* node);
+	void mousePress(SDL_MouseButtonEvent& b);
 
 private:
 
@@ -58,6 +60,7 @@ private:
 	bool mIsProcessingAdjacent; // Flag indicating that there are adjacent Nodes to process
 	bool mIsTargetFound; // Flag indicating if the target is found
 	bool mIsPathConstructing; // Flag indicating if the shortest path is still beeing constructed
+	bool mIsCreatingMap; // Flag indicating if the user is creating map
 	std::priority_queue<Node*, std::vector<Node*>, NodeGreater> openSet;
 
 };

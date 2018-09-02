@@ -5,7 +5,7 @@
 #include "../../include/model/MapData.h"
 #include "../../include/util/DrawUtil.h"
 
-pathFinder::Map::Map(int widht, int height, char* map)
+pathFinder::Map::Map(int widht, int height, const char* map)
 	: mMapData(new MapData(widht, height))
 {
 	init(map);
@@ -16,12 +16,17 @@ pathFinder::Map::~Map()
 	delete mMapData;
 }
 
-pathFinder::MapData* pathFinder::Map::getMapData()
+pathFinder::MapData* pathFinder::Map::getMapData() const
 {
 	return mMapData;
 }
 
-void pathFinder::Map::init(char* map)
+
+//////////////////////////////////////////////////////////////
+// Private Functions
+//////////////////////////////////////////////////////////////
+
+void pathFinder::Map::init(const char* map) const
 {
 	mMapData->mColorMap = new int*[mMapData->mWidth];
 
@@ -58,4 +63,3 @@ void pathFinder::Map::init(char* map)
 		}
 	}
 }
-

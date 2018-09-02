@@ -21,18 +21,18 @@ class pathFinder::Map
 public:
 
 	// Constructor
-	Map(int width, int height, char* map);
+	Map(int width, int height, const char* map);
 
 	// Destructor
 	~Map();
 
 public:
 
-	MapData* getMapData();
+	MapData* getMapData() const;
 
 private:
 
-	void init(char* map);
+	void init(const char* map) const;
 
 private:
 

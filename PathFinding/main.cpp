@@ -11,8 +11,6 @@
 #include <thread>
 #include <chrono>
 
-#define WWIDTH		336									// Width of Window
-#define WHEIGHT		480									// Height of Window
 #define WBIT		16									// 16-bit colors
 #define WFLAGS		SDL_HWSURFACE | SDL_DOUBLEBUF		// Set up for Video Hardware and Double Buffering
 #define WINDOWTITLE "Path Finding"
@@ -24,6 +22,43 @@ void GameDone();
 
 int main(int argc, char* argv[])
 {
+	char pMap[] =
+	{
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	};
+
+	const int WIDTH = 21;
+	const int HEIGHT = 30;
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 
@@ -32,7 +67,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	display = SDL_SetVideoMode(WWIDTH, WHEIGHT, WBIT, WFLAGS);
+	display = SDL_SetVideoMode(WIDTH * WBIT, HEIGHT * WBIT, WBIT, WFLAGS);
 
 	if (!display)
 	{
@@ -52,23 +87,8 @@ int main(int argc, char* argv[])
 
 	SDL_WM_SetCaption(WINDOWTITLE, WINDOWTITLE);
 
-
-	char pMap[] =
-	{
-		0,0,0,0,0,0,0,0,0,1,0,
-		0,0,0,0,0,0,0,0,0,1,0,
-		0,1,1,1,1,1,1,1,1,1,0,
-		0,1,1,0,0,1,0,0,1,1,0,
-		0,1,0,1,1,1,0,0,1,0,0,
-		0,1,1,1,0,1,0,0,1,1,0,
-		0,0,0,1,0,1,0,0,0,1,0,
-		0,0,0,1,0,1,0,0,0,1,0,
-		0,0,1,1,1,1,1,1,1,1,0,
-		1,1,1,0,0,0,0,0,0,0,0,
-	};
-
-	pathFinder::Map map(11, 10, pMap);
-	pathFinder::PathFinder finder(map.getMapData(), 0, 9, 9, 0);
+	pathFinder::Map map(WIDTH, HEIGHT, pMap);
+	pathFinder::PathFinder finder(map.getMapData(), 0, 29, 20, 0);
 	pathFinder::MapView mapView(display, surfBlocks, map.getMapData(), 0, 0);
 	pathFinder::ViewController controller(display, surfBlocks);
 
@@ -78,9 +98,16 @@ int main(int argc, char* argv[])
 	{
 		finder.onEvent();
 
+		if (finder.isCreatingMap())
+		{
+			finder.onEvent();
+			controller.Draw();
+			continue;
+		}
+
 		if (!finder.isTargetFound())
 		{
-			std::this_thread::sleep_for(std::chrono::microseconds(50000));
+			//std::this_thread::sleep_for(std::chrono::microseconds(50000));
 			controller.Draw();
 			finder.updateCurrentNode();
 
@@ -88,7 +115,7 @@ int main(int argc, char* argv[])
 			{
 				finder.processAdjacent();
 				finder.onEvent();
-				std::this_thread::sleep_for(std::chrono::microseconds(50000));
+				//std::this_thread::sleep_for(std::chrono::microseconds(50000));
 				controller.Draw();
 			}
 		}
@@ -98,12 +125,12 @@ int main(int argc, char* argv[])
 			{
 				finder.findShortestPathTile();
 				finder.onEvent();
-				std::this_thread::sleep_for(std::chrono::microseconds(50000));
+				//std::this_thread::sleep_for(std::chrono::microseconds(50000));
 				controller.Draw();
 			}
 		}
 
-		std::this_thread::sleep_for(std::chrono::microseconds(50000));
+		//std::this_thread::sleep_for(std::chrono::microseconds(50000));
 		controller.Draw();
 	}
 

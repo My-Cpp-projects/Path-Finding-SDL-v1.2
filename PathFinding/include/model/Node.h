@@ -52,7 +52,7 @@ struct pathFinder::Node
 
 struct pathFinder::NodeGreater
 {
-	bool operator()(const Node* lhs, const Node* rhs)
+	bool operator()(const Node* lhs, const Node* rhs) const
 	{
 		return lhs->mFScore > rhs->mFScore;
 	}
